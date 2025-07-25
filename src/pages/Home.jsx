@@ -1,7 +1,10 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Calendar, Users, MapPin, Clock, CheckCircle, Zap } from 'lucide-react'
+import { Calendar, Users, MapPin, Clock, CheckCircle, Zap, ArrowRight, Star } from 'lucide-react'
 import { usePaymentContext } from '../hooks/usePaymentContext'
+import Button from '../components/ui/Button'
+import { Card, CardContent } from '../components/ui/Card'
+import Badge from '../components/ui/Badge'
 
 export default function Home() {
   const [isPremium, setIsPremium] = useState(false)
@@ -62,32 +65,48 @@ export default function Home() {
   ]
 
   return (
-    <div className="space-y-16">
+    <div className="space-y-20 animate-fade-in">
       {/* Hero Section */}
-      <section className="text-center space-y-6">
-        <h1 className="text-5xl font-bold text-gray-900">
-          Seamless shift management and worker matching,<br />
-          <span className="text-primary">so your business runs like clockwork.</span>
-        </h1>
-        <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-          Fill open shifts instantly, automate approvals, and sync with payroll - all in one platform.
-        </p>
-        <div className="flex justify-center space-x-4">
-          <Link to="/dashboard" className="btn btn-primary btn-lg">
-            Start Free Trial
-          </Link>
+      <section className="text-center space-y-8 py-12">
+        <div className="space-y-6">
+          <Badge variant="primary" className="mb-4">
+            <Star className="h-3 w-3 mr-1" />
+            Trusted by 1000+ businesses
+          </Badge>
+          
+          <h1 className="text-4xl md:text-6xl font-bold text-neutral-900 leading-tight">
+            Seamless shift management and worker matching,<br />
+            <span className="text-gradient">so your business runs like clockwork.</span>
+          </h1>
+          
+          <p className="text-xl text-neutral-600 max-w-3xl mx-auto leading-relaxed">
+            Fill open shifts instantly, automate approvals, and sync with payroll - all in one platform.
+          </p>
+        </div>
+        
+        <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
+          <Button 
+            size="lg" 
+            className="group"
+            rightIcon={<ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />}
+          >
+            <Link to="/dashboard">Start Free Trial</Link>
+          </Button>
+          
           {!isPremium && (
-            <button 
+            <Button 
+              variant="outline"
+              size="lg"
               onClick={handleUpgradeToPremium}
-              disabled={isPaymentLoading}
-              className="btn btn-secondary btn-lg disabled:opacity-50"
+              loading={isPaymentLoading}
             >
               {isPaymentLoading ? 'Processing...' : 'Upgrade to Premium ($9/month)'}
-            </button>
+            </Button>
           )}
         </div>
+        
         {isPremium && (
-          <div className="inline-flex items-center space-x-2 bg-green-50 text-green-700 px-4 py-2 rounded-full">
+          <div className="inline-flex items-center space-x-2 bg-success-50 text-success-700 px-4 py-2 rounded-full border border-success-200 animate-scale-in">
             <CheckCircle className="h-5 w-5" />
             <span className="font-medium">Premium Member</span>
           </div>
@@ -95,63 +114,94 @@ export default function Home() {
       </section>
 
       {/* Features Grid */}
-      <section className="space-y-8">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900">Everything you need to manage shifts</h2>
-          <p className="text-lg text-gray-600 mt-2">Powerful features to streamline your workforce management</p>
+      <section className="space-y-12">
+        <div className="text-center space-y-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-neutral-900">
+            Everything you need to manage shifts
+          </h2>
+          <p className="text-lg text-neutral-600 max-w-2xl mx-auto">
+            Powerful features to streamline your workforce management and boost productivity
+          </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {features.map((feature, index) => {
             const Icon = feature.icon
             const isAccessible = feature.free || isPremium
             
             return (
-              <div 
+              <Card 
                 key={index} 
-                className={`card p-6 space-y-4 relative ${!isAccessible ? 'opacity-60' : ''}`}
+                className={`relative group hover:shadow-large transition-all duration-300 ${
+                  !isAccessible ? 'opacity-75' : ''
+                }`}
+                interactive
               >
-                {!isAccessible && (
-                  <div className="absolute top-4 right-4 bg-warning text-white text-xs px-2 py-1 rounded">
-                    Premium
+                <CardContent className="p-6 space-y-4">
+                  {!isAccessible && (
+                    <Badge variant="warning" className="absolute top-4 right-4">
+                      Premium
+                    </Badge>
+                  )}
+                  
+                  <div className={`inline-flex p-3 rounded-xl transition-colors ${
+                    isAccessible 
+                      ? 'bg-primary-100 text-primary-600 group-hover:bg-primary-600 group-hover:text-white' 
+                      : 'bg-neutral-100 text-neutral-400'
+                  }`}>
+                    <Icon className="h-6 w-6" />
                   </div>
-                )}
-                <div className={`inline-flex p-3 rounded-lg ${isAccessible ? 'bg-primary text-white' : 'bg-gray-200 text-gray-400'}`}>
-                  <Icon className="h-6 w-6" />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
-              </div>
+                  
+                  <h3 className="text-xl font-semibold text-neutral-900 group-hover:text-primary-600 transition-colors">
+                    {feature.title}
+                  </h3>
+                  
+                  <p className="text-neutral-600 leading-relaxed">
+                    {feature.description}
+                  </p>
+                </CardContent>
+              </Card>
             )
           })}
         </div>
       </section>
 
       {/* Stats Section */}
-      <section className="bg-primary text-white rounded-2xl p-12">
+      <section className="bg-gradient-to-br from-primary-600 to-primary-800 text-white rounded-3xl p-12 shadow-large">
         <div className="grid md:grid-cols-3 gap-8 text-center">
-          <div>
-            <div className="text-4xl font-bold">90%</div>
-            <div className="text-blue-100 mt-2">Faster shift filling</div>
+          <div className="space-y-2">
+            <div className="text-5xl font-bold animate-pulse-soft">90%</div>
+            <div className="text-primary-100 text-lg">Faster shift filling</div>
           </div>
-          <div>
-            <div className="text-4xl font-bold">50+</div>
-            <div className="text-blue-100 mt-2">Hours saved per week</div>
+          <div className="space-y-2">
+            <div className="text-5xl font-bold animate-pulse-soft">50+</div>
+            <div className="text-primary-100 text-lg">Hours saved per week</div>
           </div>
-          <div>
-            <div className="text-4xl font-bold">95%</div>
-            <div className="text-blue-100 mt-2">Worker satisfaction rate</div>
+          <div className="space-y-2">
+            <div className="text-5xl font-bold animate-pulse-soft">95%</div>
+            <div className="text-primary-100 text-lg">Worker satisfaction rate</div>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="text-center bg-gray-50 rounded-2xl p-12 space-y-6">
-        <h2 className="text-3xl font-bold text-gray-900">Ready to transform your shift management?</h2>
-        <p className="text-lg text-gray-600">Join thousands of businesses already using Shift Sync</p>
-        <Link to="/dashboard" className="btn btn-primary btn-lg">
-          Get Started Today
-        </Link>
+      <section className="text-center bg-gradient-to-br from-neutral-50 to-neutral-100 rounded-3xl p-12 space-y-8 border border-neutral-200">
+        <div className="space-y-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-neutral-900">
+            Ready to transform your shift management?
+          </h2>
+          <p className="text-lg text-neutral-600 max-w-2xl mx-auto">
+            Join thousands of businesses already using Shift Sync to streamline their operations
+          </p>
+        </div>
+        
+        <Button 
+          size="lg" 
+          className="group shadow-medium hover:shadow-large"
+          rightIcon={<ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />}
+        >
+          <Link to="/dashboard">Get Started Today</Link>
+        </Button>
       </section>
     </div>
   )
