@@ -168,16 +168,5 @@
     @apply bg-white/80 backdrop-blur-sm border border-white/20;
   }
   
-  /* Animation Classes */
-  .animate-fade-in {
-    @apply animate-fade-in;
-  }
-  
-  .animate-slide-up {
-    @apply animate-slide-up;
-  }
-  
-  .animate-scale-in {
-    @apply animate-scale-in;
-  }
+  /* Animation classes are defined in tailwind.config.js and available as utilities */
 }
